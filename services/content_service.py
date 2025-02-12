@@ -8,8 +8,6 @@ creating, retrieving, updating, and deleting content records in the database.
 from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
-# Import Content from the models package.
-from models import Content
 # Import ContentCreate from the schemas package.
 from schemas import ContentCreate
 
@@ -50,6 +48,7 @@ class ContentService:
         Returns:
             Content: The created content record.
         """
+        from models.content import Content
         db_content = Content(id=content_id, **content.model_dump(), storage_url=storage_url)
         db.add(db_content)
         db.commit()
@@ -68,6 +67,7 @@ class ContentService:
         Returns:
             Content: The content record if found, else None.
         """
+        from models.content import Content
         return db.query(Content).filter(Content.id == content_id).first()
 
     @staticmethod
@@ -83,10 +83,11 @@ class ContentService:
         Returns:
             List[Content]: List of content records.
         """
+        from models.content import Content
         return db.query(Content).offset(skip).limit(limit).all()
 
     @staticmethod
-    def update_content(db: Session, db_content: Content, update_data: dict):
+    def update_content(db: Session, db_content, update_data: dict):
         """
         Update an existing content record with new data.
 
@@ -105,7 +106,7 @@ class ContentService:
         return db_content
 
     @staticmethod
-    def delete_content(db: Session, db_content: Content):
+    def delete_content(db: Session, db_content):
         """
         Delete a content record from the database.
 

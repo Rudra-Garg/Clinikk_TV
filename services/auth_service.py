@@ -10,7 +10,7 @@ import logging
 from sqlalchemy.orm import Session
 
 # Import User from the models package and UserCreate from schemas.
-from models import User
+from models.user import User
 from schemas import UserCreate
 # Import helper functions from utils.
 from utils import get_password_hash, verify_password
@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 
 class AuthService:
     @staticmethod
-    def get_user_by_email(db: Session, email: str):
+    def get_user_by_email(db: Session, email: str) -> User:
         """
         Retrieve a user by email.
 
@@ -35,20 +35,20 @@ class AuthService:
         return db.query(User).filter(User.email == email).first()
 
     @staticmethod
-    def create_user(db: Session, user: UserCreate):
+    def create_user(db: Session, user_create: UserCreate) -> User:
         """
         Create a new user with hashed password.
 
         Args:
             db (Session): Database session.
-            user (UserCreate): User creation data.
+            user_create (UserCreate): User creation data.
 
         Returns:
             User: The created user instance.
         """
-        logger.info("Creating user with email: %s", user.email)
-        hashed_password = get_password_hash(user.password)
-        db_user = User(email=user.email, hashed_password=hashed_password)
+        logger.info("Creating user with email: %s", user_create.email)
+        hashed_password = get_password_hash(user_create.password)
+        db_user = User(email=user_create.email, hashed_password=hashed_password)
         db.add(db_user)
         db.commit()
         db.refresh(db_user)

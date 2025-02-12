@@ -11,7 +11,7 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
-from models.content import ContentType
+from models.content_type import ContentType
 
 
 class ContentBase(BaseModel):

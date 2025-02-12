@@ -4,7 +4,6 @@ SQLAlchemy models for content management.
 This module defines the models for storing content records.
 """
 
-import enum
 import uuid
 
 from sqlalchemy import Column, Integer, String, DateTime, Enum as SAEnum
@@ -12,14 +11,7 @@ from sqlalchemy.sql import func
 
 # Import Base and GUID from utils.
 from utils import Base, GUID
-
-
-class ContentType(str, enum.Enum):
-    """
-    Enumeration of content types.
-    """
-    VIDEO = "video"
-    AUDIO = "audio"
+from .content_type import ContentType  # Updated import
 
 
 class Content(Base):

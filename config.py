@@ -6,6 +6,7 @@ including database credentials, JWT configurations, and AWS S3 storage settings.
 """
 
 from functools import lru_cache
+
 from pydantic_settings import BaseSettings
 
 

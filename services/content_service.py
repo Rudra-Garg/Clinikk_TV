@@ -5,10 +5,13 @@ This module provides the ContentService class with methods for validating file t
 creating, retrieving, updating, and deleting content records in the database.
 """
 
-from sqlalchemy.orm import Session
-from models.content import Content
-from schemas.content import ContentCreate
 from fastapi import UploadFile
+from sqlalchemy.orm import Session
+
+# Import Content from the models package.
+from models import Content
+# Import ContentCreate from the schemas package.
+from schemas import ContentCreate
 
 
 class ContentService:

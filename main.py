@@ -6,13 +6,14 @@ creates database tables, includes API routers, and defines health check endpoint
 """
 
 import logging
-from fastapi import FastAPI, HTTPException
+
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes import content_router, auth_router
-from utils.database import engine, Base, get_db
-from services.storage_service import StorageService
 from sqlalchemy.exc import SQLAlchemyError
-from utils.logger import setup_logging
+
+from routes import content_router, auth_router
+from services import StorageService
+from utils import engine, Base, get_db, setup_logging
 
 # Setup custom logging for the entire app
 setup_logging()

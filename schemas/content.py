@@ -8,6 +8,7 @@ including creation, updating, and representation of content.
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
+
 from pydantic import BaseModel
 
 from models.content import ContentType

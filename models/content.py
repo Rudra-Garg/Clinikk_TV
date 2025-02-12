@@ -6,10 +6,12 @@ This module defines the models for storing content records.
 
 import enum
 import uuid
-from sqlalchemy import Column, Integer, String, DateTime, Enum
+
+from sqlalchemy import Column, Integer, String, DateTime, Enum as SAEnum
 from sqlalchemy.sql import func
-from utils.database import Base
-from utils.guid import GUID  # Use our custom GUID type
+
+# Import Base and GUID from utils.
+from utils import Base, GUID
 
 
 class ContentType(str, enum.Enum):
@@ -29,7 +31,7 @@ class Content(Base):
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     title = Column(String, nullable=False)
     description = Column(String, nullable=False)
-    content_type = Column(Enum(ContentType), nullable=False)
+    content_type = Column(SAEnum(ContentType), nullable=False)
     storage_url = Column(String)
     thumbnail_url = Column(String, nullable=True)
     duration = Column(Integer, nullable=False)

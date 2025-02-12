@@ -6,11 +6,14 @@ authentication, and retrieval.
 """
 
 import logging
+
 from sqlalchemy.orm import Session
 
-from models.user import User
-from schemas.user import UserCreate
-from utils.password import get_password_hash, verify_password
+# Import User from the models package and UserCreate from schemas.
+from models import User
+from schemas import UserCreate
+# Import helper functions from utils.
+from utils import get_password_hash, verify_password
 
 logger = logging.getLogger(__name__)
 
@@ -69,9 +72,9 @@ class AuthService:
         user = AuthService.get_user_by_email(db, email)
         if not user:
             logger.warning("Authentication failed: user with email %s not found.", email)
-            return False
+            return None
         if not verify_password(password, user.hashed_password):
             logger.warning("Authentication failed: incorrect password for user %s.", email)
-            return False
+            return None
         logger.info("User %s authenticated successfully.", email)
         return user

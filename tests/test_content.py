@@ -4,31 +4,35 @@ Unit tests for content endpoints.
 This module tests content creation, retrieval, listing, update, and deletion operations.
 """
 
-from fastapi.testclient import TestClient
-import pytest
-from main import app
-from models.content import ContentType
 import io
 import uuid
-from models.user import User
-from utils.security import get_current_user
-from services.storage_service import StorageService
+
+import pytest
+
+# Import models and from packages.
+from models import User
+from services import StorageService
+from utils import get_current_user
+
 
 # Dummy async function to bypass actual S3 uploading during tests.
 async def dummy_upload_file(file, content_type, content_id):
     return f"http://dummy-url/{content_id}"
 
-# Override the get_current_user dependency so that endpoints protected by authentication work in tests.
+
+# Override dependency for authentication.
 @pytest.fixture(autouse=True)
 def override_get_current_user(client):
     client.app.dependency_overrides[get_current_user] = lambda: User(
         id=uuid.uuid4(), email="testuser@example.com", is_active=True
     )
 
-# Override the S3 upload function so that file uploads return a dummy URL.
+
+# Override the S3 upload function.
 @pytest.fixture(autouse=True)
 def override_storage_service(monkeypatch):
     monkeypatch.setattr(StorageService, "upload_file", dummy_upload_file)
+
 
 def test_create_content(client):
     """
@@ -49,7 +53,7 @@ def test_create_content(client):
     content = response.json()
     assert content["title"] == form_data["title"]
     assert content["description"] == form_data["description"]
-    # Check that our overridden storage service returns the dummy URL.
+    # Check that the dummy storage service returns the dummy URL.
     assert "http://dummy-url/" in content.get("storage_url", "")
 
 

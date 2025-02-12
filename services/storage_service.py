@@ -5,16 +5,17 @@ This module provides methods for interacting with AWS S3 storage,
 including file uploads, deletion, and generating presigned URLs for streaming.
 """
 
-import boto3
 import logging
-from fastapi import UploadFile
-from config import settings
-import uuid
+from typing import Optional
 from urllib.parse import urlparse
+
+import boto3
 from botocore.client import Config
 from botocore.exceptions import ClientError
-from typing import Optional
+from fastapi import UploadFile
 from starlette.concurrency import run_in_threadpool
+
+from config import settings
 
 logger = logging.getLogger(__name__)
 
@@ -45,7 +46,7 @@ class StorageService:
             aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
             aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
             region_name=settings.AWS_REGION,
-            config=Config(signature_version='s3v4', s3={'addressing_style': 'virtual'})
+            config=Config(signature_version='s3v4')
         )
 
     @staticmethod

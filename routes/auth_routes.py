@@ -7,10 +7,9 @@ This module defines endpoints for user registration and login, returning JWT tok
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from utils.database import get_db
-from schemas.user import User, UserCreate, Token, UserLogin
-from services.auth_service import AuthService
-from utils.security import create_access_token
+from schemas import User, UserCreate, Token, UserLogin
+from services import AuthService
+from utils import create_access_token, get_db
 
 router = APIRouter(
     prefix="/auth",

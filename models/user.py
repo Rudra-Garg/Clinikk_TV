@@ -6,8 +6,8 @@ This module defines the User model for storing user information.
 
 import uuid
 from sqlalchemy import Column, String, Boolean
-from utils.database import Base
-from utils.guid import GUID  
+# Import Base and GUID from utils.
+from utils import Base, GUID
 
 
 class User(Base):
@@ -19,4 +19,4 @@ class User(Base):
     id = Column(GUID(), primary_key=True, default=uuid.uuid4)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
-    is_active = Column(Boolean, default=True) 
+    is_active = Column(Boolean, default=True)

@@ -4,8 +4,9 @@ Schemas for user-related operations.
 This module defines the Pydantic models for user creation, login, and token management.
 """
 
-from pydantic import BaseModel, EmailStr
 from uuid import UUID
+
+from pydantic import BaseModel, EmailStr
 
 
 class UserBase(BaseModel):

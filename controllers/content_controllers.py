@@ -7,12 +7,15 @@ file uploads, retrieval, updates, deletion, and streaming of content.
 
 import logging
 import uuid
+
 from fastapi import UploadFile, HTTPException
 from sqlalchemy.orm import Session
-from models.content import Content
-from schemas.content import ContentCreate, ContentUpdate
-from services.content_service import ContentService
-from services.storage_service import StorageService, S3UploadException
+
+from models import Content
+from schemas import ContentCreate, ContentUpdate
+# Import services from the services package (make sure to update services/__init__.py to re-export S3UploadException
+# if needed)
+from services import ContentService, StorageService, S3UploadException
 
 logger = logging.getLogger(__name__)
 

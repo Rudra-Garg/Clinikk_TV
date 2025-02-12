@@ -9,6 +9,7 @@ def test_register_user(client):
     assert user["email"] == user_data["email"]
     assert "id" in user
 
+
 def test_register_existing_user(client):
     user_data = {
         "email": "existinguser@example.com",
@@ -22,6 +23,7 @@ def test_register_existing_user(client):
     assert response2.status_code == 400, response2.text
     detail = response2.json().get("detail", "")
     assert detail == "Email already registered"
+
 
 def test_login(client):
     # Register a user to later log in.
@@ -41,4 +43,4 @@ def test_login(client):
     token_data = response.json()
     assert "access_token" in token_data
     # Typically the token type is "bearer".
-    assert token_data.get("token_type") == "bearer" 
+    assert token_data.get("token_type") == "bearer"

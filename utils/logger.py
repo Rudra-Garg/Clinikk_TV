@@ -42,4 +42,4 @@ def setup_logging():
     error_handler = RotatingFileHandler(error_file, maxBytes=10*1024*1024, backupCount=5)
     error_handler.setLevel(logging.ERROR)
     error_handler.setFormatter(formatter)
-    logger.addHandler(error_handler) 
+    logger.addHandler(error_handler)

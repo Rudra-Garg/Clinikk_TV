@@ -1,6 +1,8 @@
 import uuid
-from sqlalchemy.types import TypeDecorator, CHAR
+
 from sqlalchemy.dialects.postgresql import UUID as pg_UUID
+from sqlalchemy.types import TypeDecorator, CHAR
+
 
 class GUID(TypeDecorator):
     """
@@ -30,4 +32,4 @@ class GUID(TypeDecorator):
     def process_result_value(self, value, dialect):
         if value is None:
             return value
-        return uuid.UUID(value) 
+        return uuid.UUID(value)

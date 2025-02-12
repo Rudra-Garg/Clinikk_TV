@@ -8,8 +8,10 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from utils.database import Base, get_db
+
 from main import app
+# Import Base and get_db from the utils package.
+from utils import Base, get_db
 
 # Use SQLite for testing
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"

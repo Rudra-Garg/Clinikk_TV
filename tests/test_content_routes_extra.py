@@ -123,12 +123,18 @@ def test_stream_content_success(client):
     content = create_dummy_content(client)
     content_id = content["id"]
 
+    # Create a new TestClient instance with follow_redirects disabled.
+    from fastapi.testclient import TestClient
+    client_no_redirect = TestClient(client.app, follow_redirects=False)
+
     # Request the streaming endpoint.
-    response = client.get(f"/content/{content_id}/stream", allow_redirects=False)
-    # Expect a redirection response (commonly 302 or 307).
+    response = client_no_redirect.get(f"/content/{content_id}/stream")
+    
+    # Expect a redirect response (302 or 307).
     assert response.status_code in (302, 307), response.text
+
     location = response.headers.get("location")
-    # Since we've overridden generate_presigned_url, verify the expected dummy URL.
+    # Verify that the dummy storage service returns the expected URL.
     assert location == "http://dummy-presigned-url", response.text
 
 

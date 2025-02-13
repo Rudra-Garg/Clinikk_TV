@@ -78,12 +78,11 @@ def get_content(content_id: UUID, db: Session = Depends(get_db)):
 @router.put("/content/{content_id}", response_model=Content, summary="Update content",
             description="Update a content record and optionally upload a new file")
 async def update_content(
-        content_id: UUID,
+        content_id: str,
         title: Optional[str] = Form(None),
         description: Optional[str] = Form(None),
         duration: Optional[int] = Form(None),
         thumbnail_url: Optional[str] = Form(None),
-        file: Optional[UploadFile] = File(None),
         db: Session = Depends(get_db),
         current_user: User = Depends(get_current_user)
 ):
@@ -92,13 +91,18 @@ async def update_content(
 
     Allows updating of content attributes and optionally uploading a new file. 
     """
-    content_update = ContentUpdate(
-        title=title,
-        description=description,
-        duration=duration,
-        thumbnail_url=thumbnail_url
-    )
-    return await ContentController.update_content(db, content_id, content_update, file)
+    update_data = {}
+    if title:
+        update_data["title"] = title
+    if description:
+        update_data["description"] = description
+    if duration:
+        update_data["duration"] = duration
+    if thumbnail_url:
+        update_data["thumbnail_url"] = thumbnail_url
+
+    content_update = ContentUpdate(**update_data)
+    return await ContentController.update_content(db, content_id, content_update, None)
 
 
 @router.delete("/content/{content_id}", summary="Delete content", description="Delete a content record by ID")

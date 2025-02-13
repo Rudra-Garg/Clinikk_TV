@@ -6,7 +6,7 @@ This module defines the Pydantic models for user creation, login, and token mana
 
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 
 class UserBase(BaseModel):
@@ -29,7 +29,8 @@ class User(UserBase):
     """
     id: UUID
     is_active: bool
-    model_config = {"from_attributes": True}
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class Token(BaseModel):

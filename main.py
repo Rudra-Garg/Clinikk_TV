@@ -6,10 +6,10 @@ creates database tables, includes API routers, and defines health check endpoint
 """
 
 import logging
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import text
 
 from routes import content_router, auth_router
 from services import StorageService
@@ -66,7 +66,7 @@ async def detailed_health_check():
     database_status = "ok"
     try:
         db = next(get_db())
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
         logger.debug("Database connectivity check passed.")
     except SQLAlchemyError as e:
         database_status = f"error: {str(e)}"

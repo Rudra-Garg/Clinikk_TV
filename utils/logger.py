@@ -17,9 +17,10 @@ def setup_logging():
     Configures the root logger to output info and error logs to rotating file handlers.
     """
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)  # Hide debug-level logs
+    if logger.handlers:  # Avoid adding duplicates if already configured.
+        return
 
-    # Define a formatter for the log messages.
+    logger.setLevel(logging.INFO)
     formatter = logging.Formatter(
         "[%(asctime)s] [%(levelname)s] [%(name)s] %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S"
@@ -33,9 +34,7 @@ def setup_logging():
     info_handler = RotatingFileHandler(info_file, maxBytes=10*1024*1024, backupCount=5)
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(formatter)
-
-    if not logger.handlers:
-        logger.addHandler(info_handler)
+    logger.addHandler(info_handler)
 
     # Set up a rotating file handler for ERROR level logs.
     error_file = os.path.join(log_dir, "error.log")

@@ -50,7 +50,7 @@ class StorageService:
         )
 
     @staticmethod
-    async def upload_file(file: UploadFile, content_type, content_id) -> str:
+    async def upload_file(file: UploadFile, content_type: str, content_id: str) -> str:
         """
         Upload a file to S3 storage asynchronously.
 

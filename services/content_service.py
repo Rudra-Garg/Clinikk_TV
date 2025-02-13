@@ -14,23 +14,28 @@ from schemas import ContentCreate
 
 class ContentService:
     @staticmethod
-    def validate_file_type(file: UploadFile, content_type: str) -> bool:
+    def validate_file_type(file: UploadFile, content_type) -> bool:
         """
         Validate the file type based on content type.
 
         Args:
             file (UploadFile): The uploaded file.
-            content_type (str): The expected content type (e.g., 'video' or 'audio').
+            content_type: The expected content type (e.g., 'video' or 'audio').
 
         Returns:
             bool: True if the file type is allowed, False otherwise.
         """
+        # If content_type is an enum (e.g., ContentType.VIDEO), get its string representation.
+        if hasattr(content_type, "value"):
+            content_type = content_type.value
+
         allowed_video_types = ["video/mp4", "video/mpeg"]
         allowed_audio_types = ["audio/mpeg", "audio/mp3", "audio/wav"]
 
-        if content_type == "video":
+        normalized_type = content_type.lower()
+        if normalized_type == "video":
             return file.content_type in allowed_video_types
-        elif content_type == "audio":
+        elif normalized_type == "audio":
             return file.content_type in allowed_audio_types
         return False
 

@@ -13,8 +13,7 @@ from sqlalchemy.orm import Session
 
 from models import Content
 from schemas import ContentCreate, ContentUpdate
-# Import services from the services package (make sure to update services/__init__.py to re-export S3UploadException
-# if needed)
+
 from services import ContentService, StorageService, S3UploadException
 
 logger = logging.getLogger(__name__)
@@ -98,22 +97,19 @@ class ContentController:
     @staticmethod
     async def update_content(db: Session, content_id, content_update: ContentUpdate, file: UploadFile = None):
         """
-        Update existing content.
-
-        If a file is provided, validates the file type, uploads the new file,
-        deletes the old S3 object if necessary, and updates the storage URL in the database.
+        Update content metadata only.
 
         Args:
             db (Session): Database session.
-            content_id (UUID): The ID of the content to update.
-            content_update (ContentUpdate): The content update data.
-            file (UploadFile, optional): The new file to upload.
+            content_id: ID of the content to update.
+            content_update (ContentUpdate): The updated metadata.
+            file (UploadFile, optional): If provided, file updates are rejected.
 
         Returns:
-            Content: The updated content record.
+            Updated content record.
 
         Raises:
-            HTTPException: If the content is not found, file type is invalid, or upload fails.
+            HTTPException: If the content is not found or if a file is provided.
         """
         logger.info("Received request to update content id: %s", content_id)
         db_content = ContentService.get_content(db, content_id)
@@ -121,31 +117,14 @@ class ContentController:
             logger.error("Content with id %s not found for update.", content_id)
             raise HTTPException(status_code=404, detail="Content not found")
 
-        update_data = content_update.dict(exclude_unset=True)
-        if file:
-            if not ContentService.validate_file_type(file, db_content.content_type):
-                logger.error("Invalid file type for content id %s during update.", content_id)
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Invalid file type for {db_content.content_type} content"
-                )
-            try:
-                # Use the same content id for naming the updated file.
-                new_storage_url = await StorageService.upload_file(file, db_content.content_type, db_content.id)
-                # If the new file URL differs from the previous one, delete the old file.
-                if new_storage_url != db_content.storage_url:
-                    try:
-                        StorageService.delete_file(db_content.storage_url)
-                    except Exception as delete_error:
-                        logger.warning("Failed to delete old S3 file at %s: %s", db_content.storage_url, delete_error)
-            except S3UploadException as e:
-                logger.error("Storage upload failed during update: %s", e)
-                raise HTTPException(status_code=500, detail=str(e))
-            update_data["storage_url"] = new_storage_url
+        update_data = content_update.model_dump(exclude_unset=True)
+        for key, value in update_data.items():
+            setattr(db_content, key, value)
 
-        updated_content = ContentService.update_content(db, db_content, update_data)
-        logger.info("Content with id %s updated successfully.", content_id)
-        return updated_content
+        db.commit()
+        db.refresh(db_content)
+        logger.info("Content with id %s metadata updated successfully.", content_id)
+        return db_content
 
     @staticmethod
     def delete_content(db: Session, content_id):

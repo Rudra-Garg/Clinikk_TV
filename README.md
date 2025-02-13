@@ -93,7 +93,7 @@ pytest
 ```
 
 ## Personal Motivation and Technology Choice
-While Node.js was an option, I chose Python with FastAPI due to:
+While Node.js was said to be preferred, I chose Python with FastAPI due to:
 - **Extensive Python Experience:** My background enables rapid development using Python's rich ecosystem.
 - **FastAPI Benefits:** Automatic API docs, asynchronous support, and concise code structure make it ideal for modern backend services.
 - **Clean Architecture:** A modular design supports scalability and maintainability in complex applications.
